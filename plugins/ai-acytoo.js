@@ -36,6 +36,5 @@ const handler = async (m, { text }) => {
 handler.help = ['acytoo'];
 handler.tags = ['ai'];
 handler.command = /^(acytoo)$/i;
-handler.premium = true;
 
 export default handler;

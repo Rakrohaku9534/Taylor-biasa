@@ -21,7 +21,6 @@ m.reply(eror)
 handler.help = ['toanimex']
 handler.tags = ['ai']
 handler.command = /^(jadianimex|toanimex)$/i
-handler.premium = false
 handler.limit = true
 
 export default handler

@@ -1,69 +1,140 @@
-import puppeteer from "puppeteer"
+import cheerio from 'cheerio';
+import fetch from 'node-fetch';
 
 let handler = async (m, {
     conn,
     args,
     usedPrefix,
+    text,
     command
 }) => {
-    let text
-    if (args.length >= 1) {
-        text = args.slice(0).join(" ")
-    } else if (m.quoted && m.quoted.text) {
-        text = m.quoted.text
-    } else throw "Input Teks"
-    try {
+
+    let lister = [
+        "search",
+        "detail"
+    ]
+
+    let [feature, inputs, inputs_, inputs__, inputs___] = text.split("|")
+    if (!lister.includes(feature)) return m.reply("*Example:*\n.hellosehat search|vpn\n\n*Pilih type yg ada*\n" + lister.map((v, index) => "  ○ " + v).join("\n"))
+
+    if (lister.includes(feature)) {
+
+        if (feature == "search") {
+            if (!inputs) return m.reply("Input query link\nExample: .hellosehat search|vpn")
             await m.reply(wait)
-            let res = await scrape('https://hellosehat.com/search/?s=' +text+ '&page=1')
-            await m.reply(res[0].value)
-    } catch (e) {
-        throw eror
+            try {
+                let res = await searchhellosehat(inputs)
+                let teks = res.map((item, index) => {
+  return `🔍 *[ RESULT ${index + 1} ]*
+
+📚 Title: ${item.title}
+🔗 Link: ${item.link}
+📅 Date: ${item.time}
+📖 Description: ${item.desc}
+👤 Author: ${item.author}
+`;
+}).join("\n\n________________________\n\n");
+                await m.reply(teks)
+            } catch (e) {
+                await m.reply(eror)
+            }
+        }
+
+        if (feature == "detail") {
+            if (!inputs) return m.reply("Input query link\nExample: .hellosehat search|group")
+            await m.reply(wait)
+            try {
+                let item = await detailhellosehat(inputs)
+                let cap = `🔍 *[ RESULT ]*
+
+${item}
+`
+                await m.reply(item)
+                
+            } catch (e) {
+                await m.reply(eror)
+            }
+        }
     }
 }
 handler.help = ["hellosehat"]
 handler.tags = ["internet"]
-handler.command = /^hellosehat$/i
-
+handler.command = /^(hellosehat)$/i
 export default handler
 
 /* New Line */
-async function scrape(url) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(url);
+async function searchhellosehat(query) {
+  try {
+    const encodedQuery = encodeURIComponent(query); // Encode the query parameter
+    const url = `https://wp.hellosehat.com/?s=${encodedQuery}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    const $ = cheerio.load(await response.text());
 
-  // menghapus tag link, style, dan script dari halaman
-  await page.evaluate(() => {
-    const elements = document.querySelectorAll('link, style, script');
-    elements.forEach(el => el.remove());
-  });
+    const results = $('.card.article--card')
+      .map((index, element) => {
+        const article = $(element);
+        const title = article.find('h2.entry-title a').text().trim();
+        const link = article.find('h2.entry-title a').attr('href');
+        const desc = article.find('.entry-summary p').text().trim();
+        const author = article.find('.author.vcard a').text().trim();
+        const time = article.find('time.entry-date.published').attr('datetime');
+        return title && desc ? { title, link, desc, author, time } : null;
+      })
+      .get()
+      .filter(Boolean);
 
-  // mengambil teks dan gambar dari halaman
-  const data = await page.evaluate(() => {
-    const elements = document.querySelectorAll('*');
-    const results = [];
+    if (!results.length) throw new Error('No matching results found.');
 
-    elements.forEach(el => {
-      if (el.tagName !== 'SCRIPT' && el.tagName !== 'LINK' && el.tagName !== 'STYLE' && el.tagName !== 'FRAME' && el.tagName !== 'META') {
-        const obj = {};
+    const total = parseInt($('.search--result-count').text()) || 0;
+    return { total, result: results };
+  } catch (error) {
+    throw new Error(`Error: ${error.message}`);
+  }
+}
 
-        if (el.textContent.trim()) {
-          obj.type = 'text';
-          obj.value = el.textContent.trim();
-          results.push(obj);
+async function detailhellosehat(url) {
+  try {
+    const response = await axios.get(url);
+
+    if (!response.status === 200) {
+      throw new Error('Failed to fetch the page');
+    }
+
+    const $ = cheerio.load(response.data);
+    $('style, script, frame').remove();
+    const validTags = ['p', 'h2'];
+    let result = '';
+
+    const processElement = (element) => {
+      if (element.type === 'text') {
+        const text = element.data && element.data.trim();
+        if (text) {
+          result += text + '\n';
         }
-
-        if (el.tagName === 'IMG' && el.src) {
-          obj.type = 'image';
-          obj.value = el.src;
-          results.push(obj);
+      } else if (element.type === 'tag') {
+        const tagName = element.name && element.name.toLowerCase();
+        if (validTags.includes(tagName)) {
+          const text = $(element).text().trim();
+          if (text) {
+            result += text + '\n\n';
+          }
         }
+      }
+    };
+
+    $('body *').each((index, element) => {
+      const tagName = element.name && element.name.toLowerCase();
+      if (validTags.includes(tagName)) {
+        processElement(element);
       }
     });
 
-    return results;
-  });
+    $('img').remove();
+    result = result.replace(/<img.*?>/g, '');
 
-  await browser.close();
-  return data;
+    return result.trim();
+  } catch (error) {
+    throw new Error('Error fetching the page: ' + error.message);
+  }
 }

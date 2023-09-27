@@ -18,8 +18,6 @@ await conn.sendFile(m.chat, hasil, '', '_Nih Kak Hasilnya_', m)
 handler.help = ['tohdx']
 handler.tags = ['ai']
 handler.command = /^(tohdx)$/i
-
-handler.register = false
 handler.limit = true
 
 export default handler

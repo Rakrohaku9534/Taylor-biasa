@@ -36,6 +36,5 @@ const handler = async (m, { text }) => {
 handler.help = ['aivvm'];
 handler.tags = ['ai'];
 handler.command = /^(aivvm)$/i;
-handler.premium = true;
 
 export default handler;

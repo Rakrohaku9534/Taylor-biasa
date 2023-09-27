@@ -19,6 +19,5 @@ const handler = async (m, { text }) => {
 handler.help = ['aichat'];
 handler.tags = ['ai'];
 handler.command = /^(aichat)$/i;
-handler.premium = true;
 
 export default handler;

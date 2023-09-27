@@ -36,6 +36,5 @@ const handler = async (m, { text }) => {
 handler.help = ['chatbase'];
 handler.tags = ['ai'];
 handler.command = /^(chatbase)$/i;
-handler.premium = true;
 
 export default handler;

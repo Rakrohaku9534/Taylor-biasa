@@ -36,6 +36,5 @@ const handler = async (m, { text }) => {
 handler.help = ['liaobots'];
 handler.tags = ['ai'];
 handler.command = /^(liaobots)$/i;
-handler.premium = true;
 
 export default handler;
