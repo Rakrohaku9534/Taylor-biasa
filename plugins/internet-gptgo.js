@@ -61,6 +61,11 @@ async function gptGo(query) {
     return acc;
   }, []);
 
+  // Menghapus elemen terakhir dari array result
+  if (result.length > 0) {
+    result.pop();
+  }
+
   const mergedContent = { content: result.join('') };
   return mergedContent;
 }

@@ -24,7 +24,7 @@ let handler = async (m, {
             await m.reply(wait)
             try {
                 let res = await searchhellosehat(inputs)
-                let teks = res.map((item, index) => {
+                let teks = res.result.map((item, index) => {
   return `🔍 *[ RESULT ${index + 1} ]*
 
 📚 Title: ${item.title}
@@ -95,13 +95,9 @@ async function searchhellosehat(query) {
 
 async function detailhellosehat(url) {
   try {
-    const response = await axios.get(url);
-
-    if (!response.status === 200) {
-      throw new Error('Failed to fetch the page');
-    }
-
-    const $ = cheerio.load(response.data);
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    const $ = cheerio.load(await response.text());
     $('style, script, frame').remove();
     const validTags = ['p', 'h2'];
     let result = '';

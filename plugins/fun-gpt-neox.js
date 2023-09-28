@@ -1,4 +1,4 @@
-import { sendWebhookRequest } from '../lib/botika.js';
+import { HuggingFace } from '../lib/huggingface.js';
 
 let handler = async (m, {
     conn,
@@ -14,11 +14,12 @@ if (args.length >= 1) {
 } else return m.reply("Masukkan pesan!")
 await m.reply(wait)
 try {
-    const openAIResponse = await sendWebhookRequest(text);
+const MODEL = 'EleutherAI/gpt-neox-20b';
+    const openAIResponse = await HuggingFace(MODEL, text);
     
     if (openAIResponse) {
       console.log("Respons dari OpenAI:");
-      await m.reply(openAIResponse);
+      await m.reply(decodeURIComponent(openAIResponse[0].generated_text));
     } else {
       console.log("Tidak ada respons dari OpenAI atau terjadi kesalahan.");
     }
@@ -27,7 +28,7 @@ try {
     await m.reply(eror);
   }
 }
-handler.help = ["botika"]
+handler.help = ["gptneox"]
 handler.tags = ["fun"]
-handler.command = /^botika$/i
+handler.command = /^gptneox$/i
 export default handler

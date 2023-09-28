@@ -1,4 +1,4 @@
-import { sendWebhookRequest } from '../lib/botika.js';
+import { HuggingFace } from '../lib/huggingface.js';
 
 let handler = async (m, {
     conn,
@@ -14,11 +14,13 @@ if (args.length >= 1) {
 } else return m.reply("Masukkan pesan!")
 await m.reply(wait)
 try {
-    const openAIResponse = await sendWebhookRequest(text);
+const MODEL = 'facebook/blenderbot-400M-distill';
+const INPUT = (text);
+    const openAIResponse = await HuggingFace(MODEL, INPUT);
     
     if (openAIResponse) {
       console.log("Respons dari OpenAI:");
-      await m.reply(openAIResponse);
+      await m.reply(openAIResponse.generated_text);
     } else {
       console.log("Tidak ada respons dari OpenAI atau terjadi kesalahan.");
     }
@@ -27,7 +29,7 @@ try {
     await m.reply(eror);
   }
 }
-handler.help = ["botika"]
+handler.help = ["blenderbot"]
 handler.tags = ["fun"]
-handler.command = /^botika$/i
+handler.command = /^blenderbot$/i
 export default handler
