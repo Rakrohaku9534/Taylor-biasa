@@ -19,7 +19,7 @@ const handler = async (m, { text }) => {
   m.reply('Sedang memproses...');
   const messages = [
     { role: 'system', content: 'You are a helpful assistant.' },
-    { role: 'user', content: text },
+    { role: 'user', content: encodeURIComponent(text) },
   ];
 
   try {

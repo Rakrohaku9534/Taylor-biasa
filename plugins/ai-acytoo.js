@@ -18,7 +18,7 @@ const handler = async (m, { text }) => {
   m.reply(wait);
   const messages = [
     { role: 'system', content: 'You are a helpful assistant.' },
-    { role: 'user', content: text },
+    { role: 'user', content: encodeURIComponent(text) },
   ];
 
   

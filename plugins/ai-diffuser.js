@@ -33,7 +33,7 @@ let handler = async (m, {
         if (urutan > data.length) return m.reply("Input query!\n*Example:*\n.diffuser [nomor]|[query]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
         let out = data[urutan - 1].id
         
-        const openAIResponse = await HuggingFaceBuffer(out, tema);
+        const openAIResponse = await HuggingFaceBuffer(out, encodeURIComponent(tema));
 
         if (openAIResponse) {
             const tag = `@${m.sender.split('@')[0]}`;

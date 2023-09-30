@@ -40,7 +40,7 @@ let handler = async (m, {
 
         const generateImageParams = {
             imageUrl: link,
-            prompt: tema,
+            prompt: encodeURIComponent(tema),
             model: out,
             upscale: true
         };

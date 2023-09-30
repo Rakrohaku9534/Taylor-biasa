@@ -31,7 +31,7 @@ let handler = async (m, {
         let out = data[urutan - 1].id
 
         const generateImageParams = {
-            prompt: tema,
+            prompt: encodeURIComponent(tema),
             model: out,
             upscale: true
         };

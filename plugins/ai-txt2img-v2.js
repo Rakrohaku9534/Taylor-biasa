@@ -28,7 +28,7 @@ let handler = async (m, {
         let out = data[urutan - 1].id
 
         const params = {
-            prompt: tema,
+            prompt: encodeURIComponent(tema),
             negative_prompt: '',
             model: out
         };

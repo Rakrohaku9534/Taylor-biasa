@@ -12,7 +12,8 @@ let handler = async (m, {
         lang = args[0] ? args[0] : "id", text = m.quoted.text
     } else throw `Ex: ${usedPrefix + command} id hello i am robot`
     try {
-        let reis = await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + lang + "&dt=t&q=" + text)
+    const prompt = encodeURIComponent(text);
+        let reis = await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + lang + "&dt=t&q=" + prompt)
         let res = await reis.json()
         let lister = Object.keys(await langList())
         let supp = `Error : Bahasa "${lang}" Tidak Support`

@@ -17,7 +17,7 @@ let handler = async (m, {
     await m.reply(wait)
     try {
         const MODEL = 'stabilityai/stable-diffusion-xl-base-1.0';
-        const openAIResponse = await HuggingFaceBuffer(MODEL, text);
+        const openAIResponse = await HuggingFaceBuffer(MODEL, encodeURIComponent(text));
 
         if (openAIResponse) {
             await m.reply(openAIResponse)
