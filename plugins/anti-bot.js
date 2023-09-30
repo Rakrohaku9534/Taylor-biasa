@@ -9,7 +9,7 @@ export async function before(m, { isAdmin, isBotAdmin }) {
         if (isAdmin || !isBotAdmin){		  
         } else {
           m.reply(`*Bot Lain Terdeteksi*\n\nMaaf Kak Harus Saya Keluarkan, Karna Admin Mengaktifkan Anti Bot :)`)
-    return await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+    return await this.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
         }return true
     }
   }
