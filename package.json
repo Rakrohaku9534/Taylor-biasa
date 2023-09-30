@@ -114,6 +114,7 @@
         "pdfkit": "*",
         "perf_hooks": "*",
         "pino": "*",
+        "prodia": "*",
         "qrcode": "*",
         "qrcode-reader": "*",
         "qrcode-terminal": "*",
