@@ -1,47 +1,51 @@
-import axios from "axios"
-import fetch from "node-fetch"
+import uploadFile from '../lib/uploadFile.js'
+import uploadImage from '../lib/uploadImage.js'
+import fetch from 'node-fetch'
+const {
+    generateSerpApiUrl
+} = await (await import('../lib/serpapi.js'));
 
 let handler = async (m, {
+    command,
+    usedPrefix,
     conn,
     text,
-    args,
-    usedPrefix,
-    command
+    args
 }) => {
-var tes = await goLens(text)
-throw tes
+    let [urutan] = args
+    let q = m.quoted ? m.quoted : m
+    let mime = (q.msg || q).mimetype || ''
+    if (!mime) throw 'No media found'
+    let media = await q.download()
+    let isTele = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime)
+    let link = await (isTele ? uploadImage : uploadFile)(media)
+    await m.reply(wait)
+    try {
+        const param = {
+            api_key: 'f70cce2ec221209bcd45af4533adbbc51c51b682c29251b618061115c6e95d5c',
+            engine: 'google_lens',
+            url: link
+        };
+        let all = await generateSerpApiUrl(param)
+        let data = all.visual_matches
+        if (!urutan) return m.reply("Input query!\n*Example:*\n.goolens [nomor]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
+        if (isNaN(urutan)) return m.reply("Input query!\n*Example:*\n.goolens [nomor]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
+        if (urutan > data.length) return m.reply("Input query!\n*Example:*\n.goolens [nomor]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
+        let out = data[urutan - 1]
+        let caption = `🔍 *[ HASIL ]*
+
+📋 *Deskripsi:* ${out.title || 'Tidak ada'}
+📍 *Source:* ${out.source || 'Tidak ada'}
+⭐ *Link:* ${out.link || 'Tidak ada'}
+📝 *Thumbnail:* ${out.thumbnail || 'Tidak ada'}
+`;
+
+        await m.reply(caption)
+    } catch (e) {
+        await m.reply(eror)
+    }
 }
-handler.help = ["goolens"]
+handler.help = ["goolens *[nomor]*"]
 handler.tags = ["search"]
 handler.command = /^(goolens)$/i
 export default handler
-
-async function goLens(url) {
- return new Promise((resolve, reject) => {
-   const options = {
-     method: 'GET',
-     url: 'https://google-reverse-image-search.p.rapidapi.com/imgSearch',
-     params: { url },
-     headers: {
-      'X-RapidAPI-Host': 'google-reverse-image-search.p.rapidapi.com',
-      'X-RapidAPI-Key': '53513471femsh11b7c46a7da0a85p119682jsncc66a4e30134'
-     }
-   };
-
-   axios.request(options).then(function (response) {
-      var result = {
-         status: response.status,
-         imgUrl: response.data.imgUrl,
-         url: response.data.googleSearchResult
-      }
-      resolve(result)
-   }).catch(function (error) {
-      console.error(error);
-      var tek = {
-         status: 404,
-         msg: 'Server Error!'
-      }
-      resolve(tek)
-   });
- })
-}

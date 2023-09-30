@@ -11,8 +11,8 @@ m.reply(eror)
 }
     
 }
-handler.help = ['diffusion']
+handler.help = ['stabledif']
 handler.tags = ['ai']
-handler.command = /^(stabledif|diffusion)$/i
+handler.command = /^(stabledif)$/i
 handler.limit = true
 export default handler
