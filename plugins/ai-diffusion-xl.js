@@ -20,7 +20,15 @@ let handler = async (m, {
         const openAIResponse = await HuggingFaceBuffer(MODEL, encodeURIComponent(text));
 
         if (openAIResponse) {
-            await m.reply(openAIResponse)
+            const tag = `@${m.sender.split('@')[0]}`;
+
+            await conn.sendMessage(m.chat, {
+      image: openAIResponse,
+      caption: `Nih effect *${MODEL}* nya\nRequest by: ${tag}`,
+      mentions: [m.sender]
+    }, {
+      quoted: m
+    });
         } else {
             console.log("Tidak ada respons dari OpenAI atau terjadi kesalahan.");
         }
