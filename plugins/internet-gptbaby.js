@@ -19,7 +19,7 @@ await m.reply(eror)
 }
 }
 handler.help = ["gptbaby"]
-handler.tags = ["internet"]
+handler.tags = ["internet", "ai"]
 handler.command = /^(gptbaby)$/i
 export default handler
 

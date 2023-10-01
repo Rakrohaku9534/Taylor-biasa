@@ -29,6 +29,6 @@ const MODEL = 'EleutherAI/gpt-neox-20b';
   }
 }
 handler.help = ["gptneox"]
-handler.tags = ["fun"]
+handler.tags = ["fun", "ai"]
 handler.command = /^gptneox$/i
 export default handler

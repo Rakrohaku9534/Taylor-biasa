@@ -38,12 +38,8 @@ let text
          "replyMessage": {}
       }]
    }
-   const json = await axios.post('https://bot.lyo.su/quote/generate', obj, {
-      headers: {
-         'Content-Type': 'application/json'
-      }
-   })
-   const buffer = Buffer.from(json.data.result.image, 'base64')
+   
+   const buffer = await Quotly(obj)
    let stiker = await sticker(buffer, false, global.packname, global.author)
     if (stiker) return conn.sendFile(m.chat, stiker, 'Quotly.webp', '', m)
 }
@@ -52,6 +48,48 @@ handler.help = ['qc']
 handler.tags = ['sticker']
 handler.command = /^(qc)$/i
 export default handler
+
+async function Quotly(obj) {
+  let json;
+
+  try {
+    json = await axios.post("https://quote-api.rippanteq7.repl.co/generate", obj, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  } catch (e) {
+    try {
+      json = await axios.post("https://quote-api-1.jigarvarma2005.repl.co/generate", obj, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    } catch (e) {
+      try {
+        json = await axios.post("https://qc-api.rizzlogy.repl.co/generate", obj, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+      } catch (e) {
+        try {
+          json = await axios.post("https://quote-api.ghost19ui.repl.co/generate", obj, {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
+        } catch (e) {
+          return e;
+        }
+      }
+    }
+  }
+
+  const results = json.data.result.image;
+  const buffer = Buffer.from(results, "base64");
+  return buffer;
+}
 
 function getRandomHexColor() {
   return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");

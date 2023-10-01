@@ -21,7 +21,7 @@ let handler = async (m, {
     }
 }
 handler.help = ["chatgptonline"]
-handler.tags = ["internet"]
+handler.tags = ["internet", "ai"]
 handler.command = /^chatgptonline$/i
 
 export default handler

@@ -155,23 +155,45 @@ async function QuotlyImg(a, b, c, d, tema) {
             }]
         }
     }
-    let json
+    let json;
+
+  try {
+    json = await axios.post("https://quote-api.rippanteq7.repl.co/generate", obj, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  } catch (e) {
     try {
-     json = await axios.post("https://bot.lyo.su/quote/generate", obj, {
+      json = await axios.post("https://quote-api-1.jigarvarma2005.repl.co/generate", obj, {
         headers: {
-            "Content-Type": "application/json"
+          "Content-Type": "application/json"
         }
-    })
+      });
     } catch (e) {
-     json = await axios.post("https://quote-api.up.railway.app/generate", obj, {
-        headers: {
+      try {
+        json = await axios.post("https://qc-api.rizzlogy.repl.co/generate", obj, {
+          headers: {
             "Content-Type": "application/json"
+          }
+        });
+      } catch (e) {
+        try {
+          json = await axios.post("https://quote-api.ghost19ui.repl.co/generate", obj, {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
+        } catch (e) {
+          return e;
         }
-    })
+      }
     }
-    let results = json.data.result.image
-    const buffer = Buffer.from(results, "base64")
-    return buffer
+  }
+
+  const results = json.data.result.image;
+  const buffer = Buffer.from(results, "base64");
+  return buffer;
 }
 
 const isUrl = (text) => {

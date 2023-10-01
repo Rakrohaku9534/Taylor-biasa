@@ -19,7 +19,7 @@ await m.reply(eror)
 }
 }
 handler.help = ["wxgpt"]
-handler.tags = ["internet"]
+handler.tags = ["internet", "ai"]
 handler.command = /^(wxgpt)$/i
 export default handler
 

@@ -19,7 +19,7 @@ await m.reply(eror)
 }
 }
 handler.help = ["gptd4"]
-handler.tags = ["internet"]
+handler.tags = ["internet", "ai"]
 handler.command = /^(gptd4)$/i
 export default handler
 

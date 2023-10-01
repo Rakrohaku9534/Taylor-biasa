@@ -18,7 +18,7 @@ await m.reply(eror)
 }
 }
 handler.help = ["gpteso"]
-handler.tags = ["internet"]
+handler.tags = ["internet", "ai"]
 handler.command = /^(gpteso)$/i
 export default handler
 

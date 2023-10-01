@@ -20,7 +20,7 @@ await m.reply(eror)
 }
 }
 handler.help = ["pizzagpt"]
-handler.tags = ["internet"]
+handler.tags = ["internet", "ai"]
 handler.command = /^(pizzagpt)$/i
 export default handler
 

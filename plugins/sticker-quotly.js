@@ -52,95 +52,121 @@ handler.command = ["quotly", "quotlyv2", "quotlyv3"]
 export default handler
 
 async function Quotly(a, b, c, d) {
-    let obj
-    if (d == "terang") {
-        obj = {
-            "type": "quote",
-            "format": "png",
-            "backgroundColor": "#FFFFFF",
-            "width": 512,
-            "height": 768,
-            "scale": 2,
-            "messages": [{
-                "entities": [],
-                "avatar": true,
-                "from": {
-                    "id": 1,
-                    "name": a,
-                    "photo": {
-                        "url": b
-                    }
-                },
-                "text": c,
-                "replyMessage": {}
-            }]
-        }
-    }
-    
-    if (d == "random") {
-        obj = {
-            "type": "quote",
-            "format": "png",
-            "backgroundColor": getRandomHexColor().toString(),
-            "width": 512,
-            "height": 768,
-            "scale": 2,
-            "messages": [{
-                "entities": [],
-                "avatar": true,
-                "from": {
-                    "id": 1,
-                    "name": a,
-                    "photo": {
-                        "url": b
-                    }
-                },
-                "text": c,
-                "replyMessage": {}
-            }]
-        }
-    }
+  let obj;
 
-    if (d == "gelap") {
-        obj = {
-            "type": "quote",
-            "format": "png",
-            "backgroundColor": "#1b1429",
-            "width": 512,
-            "height": 768,
-            "scale": 2,
-            "messages": [{
-                "entities": [],
-                "avatar": true,
-                "from": {
-                    "id": 1,
-                    "name": a,
-                    "photo": {
-                        "url": b
-                    }
-                },
-                "text": c,
-                "replyMessage": {}
-            }]
+  if (d == "terang") {
+    obj = {
+      type: "quote",
+      format: "png",
+      backgroundColor: "#FFFFFF",
+      width: 512,
+      height: 768,
+      scale: 2,
+      messages: [
+        {
+          entities: [],
+          avatar: true,
+          from: {
+            id: 1,
+            name: a,
+            photo: {
+              url: b
+            }
+          },
+          text: c,
+          replyMessage: {}
         }
-    }
-    let json
-try {
-     json = await axios.post("https://bot.lyo.su/quote/generate", obj, {
+      ]
+    };
+  } else if (d == "random") {
+    obj = {
+      type: "quote",
+      format: "png",
+      backgroundColor: getRandomHexColor().toString(),
+      width: 512,
+      height: 768,
+      scale: 2,
+      messages: [
+        {
+          entities: [],
+          avatar: true,
+          from: {
+            id: 1,
+            name: a,
+            photo: {
+              url: b
+            }
+          },
+          text: c,
+          replyMessage: {}
+        }
+      ]
+    };
+  } else if (d == "gelap") {
+    obj = {
+      type: "quote",
+      format: "png",
+      backgroundColor: "#1b1429",
+      width: 512,
+      height: 768,
+      scale: 2,
+      messages: [
+        {
+          entities: [],
+          avatar: true,
+          from: {
+            id: 1,
+            name: a,
+            photo: {
+              url: b
+            }
+          },
+          text: c,
+          replyMessage: {}
+        }
+      ]
+    };
+  }
+
+  let json;
+
+  try {
+    json = await axios.post("https://quote-api.rippanteq7.repl.co/generate", obj, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  } catch (e) {
+    try {
+      json = await axios.post("https://quote-api-1.jigarvarma2005.repl.co/generate", obj, {
         headers: {
-            "Content-Type": "application/json"
+          "Content-Type": "application/json"
         }
-    })
+      });
     } catch (e) {
-     json = await axios.post("https://quote-api.up.railway.app/generate", obj, {
-        headers: {
+      try {
+        json = await axios.post("https://qc-api.rizzlogy.repl.co/generate", obj, {
+          headers: {
             "Content-Type": "application/json"
+          }
+        });
+      } catch (e) {
+        try {
+          json = await axios.post("https://quote-api.ghost19ui.repl.co/generate", obj, {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
+        } catch (e) {
+          return e;
         }
-    })
+      }
     }
-    let results = json.data.result.image
-    const buffer = Buffer.from(results, "base64")
-    return buffer
+  }
+
+  const results = json.data.result.image;
+  const buffer = Buffer.from(results, "base64");
+  return buffer;
 }
 
 function getRandomHexColor() {

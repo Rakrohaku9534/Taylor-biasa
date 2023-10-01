@@ -19,7 +19,7 @@ await m.reply(eror)
 }
 }
 handler.help = ["cleandx"]
-handler.tags = ["internet"]
+handler.tags = ["internet", "ai"]
 handler.command = /^(cleandx)$/i
 export default handler
 

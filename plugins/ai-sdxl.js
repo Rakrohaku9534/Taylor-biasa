@@ -9,10 +9,10 @@ let handler = async (m, {
     text,
     args
 }) => {
-    const input_data = await prodia.getModels();
+    const input_data = ["dreamshaperXL10_alpha2.safetensors [c8afe2ef]"];
 
     let [urutan, tema] = text.split("|")
-    if (!tema) return m.reply("Input query!\n*Example:*\n.txt2img [nomor]|[query]")
+    if (!tema) return m.reply("Input query!\n*Example:*\n.sdxl [nomor]|[query]")
 
     await m.reply(wait)
     try {
@@ -20,9 +20,9 @@ let handler = async (m, {
             title: item.replace(/[_-]/g, ' ').replace(/\..*/, ''),
             id: item
         }));
-        if (!urutan) return m.reply("Input query!\n*Example:*\n.txt2img [nomor]|[query]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
-        if (isNaN(urutan)) return m.reply("Input query!\n*Example:*\n.txt2img [nomor]|[query]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
-        if (urutan > data.length) return m.reply("Input query!\n*Example:*\n.txt2img [nomor]|[query]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
+        if (!urutan) return m.reply("Input query!\n*Example:*\n.sdxl [nomor]|[query]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
+        if (isNaN(urutan)) return m.reply("Input query!\n*Example:*\n.sdxl [nomor]|[query]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
+        if (urutan > data.length) return m.reply("Input query!\n*Example:*\n.sdxl [nomor]|[query]\n\n*Pilih angka yg ada*\n" + data.map((item, index) => `*${index + 1}.* ${item.title}`).join("\n"))
         let out = data[urutan - 1].id
 
         const generateImageParams = {
@@ -52,13 +52,13 @@ let handler = async (m, {
         await m.reply(eror)
     }
 }
-handler.help = ["txt2img *[nomor]|[query]*"]
+handler.help = ["sdxl *[nomor]|[query]*"]
 handler.tags = ["ai"]
-handler.command = /^(txt2img)$/i
+handler.command = /^(sdxl)$/i
 export default handler
 
 async function generateImage(params) {
-    const generate = await prodia.generateImage(params);
+    const generate = await prodia.sdxl(params);
 
     while (generate.status !== "succeeded" && generate.status !== "failed") {
         await new Promise((resolve) => setTimeout(resolve, 250));
