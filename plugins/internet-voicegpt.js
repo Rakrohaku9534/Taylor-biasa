@@ -156,7 +156,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
   }
 };
 handler.help = ["voicegpt"]
-handler.tags = ["internet", "ai"]
+handler.tags = ["internet", "ai", "gpt"];
 handler.command = /^(openaivoce|voicegpt|gptvoice)$/i;
 export default handler;
 

@@ -20,7 +20,7 @@ await m.reply(eror)
 }
 }
 handler.help = ["gptgo"]
-handler.tags = ["internet", "ai"]
+handler.tags = ["internet", "ai", "gpt"];
 handler.command = /^(gptgo)$/i
 export default handler
 

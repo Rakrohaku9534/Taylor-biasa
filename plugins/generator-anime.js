@@ -1,60 +1,63 @@
-/* Recode By Wudysoft */
-import Jimp from "jimp"
-import axios from "axios";
-import uploadFile from '../lib/uploadFile.js'
-import uploadImage from '../lib/uploadImage.js'
+import axios from 'axios';
 
 let handler = async (m, {
+    command,
+    usedPrefix,
     conn,
     text,
-    args,
-    usedPrefix,
-    command
+    args
 }) => {
+    
     let q = m.quoted ? m.quoted : m
-    let mime = (q.msg || q).mimetype || q.mediaType || ""
-    if (!/image/g.test(mime)) throw `Balas/Kirim Gambar Dengan Perintah ${usedPrefix + command}!`
+    let mime = (q.msg || q).mimetype || ''
+    if (!mime) throw 'No media found'
+    let media = await q.download()
+    
     await m.reply(wait)
-    let data = await q.download?.()
-    let image = await uploadImage(data)
-    let anime
     try {
-        anime = await ToAnime("caliph", image)
-    } catch (e) {
-        try {
-            anime = await ToAnime("zahwazein", image)
-        } catch (e) {
-            try {
-                anime = await ToAnime("xzn", image)
-            } catch (e) {
-                await m.reply(eror)
-            }
+        const openAIResponse = await processImageAndUpload(media);
+
+        if (openAIResponse) {
+            const result = openAIResponse;
+            const tag = `@${m.sender.split('@')[0]}`;
+
+            await conn.sendMessage(m.chat, {
+                image: {
+                    url: result
+                },
+                caption: `Nih effect *photo-to-anime* nya\nRequest by: ${tag}`,
+                mentions: [m.sender]
+            }, {
+                quoted: m
+            });
+        } else {
+            console.log("Tidak ada respons dari OpenAI atau terjadi kesalahan.");
         }
+    } catch (e) {
+        await m.reply(eror)
     }
-    await conn.sendFile(m.chat, anime, 'anime.jpg', "Sudah Jadi", m, false)
 }
-handler.help = ["toanime"].map(v => v + " (Balas foto)")
+handler.help = ["jadianime"].map(v => v + " (Balas foto)")
 handler.tags = ["tools"]
-handler.command = /^(to|jadi)anime$/i
+handler.command = /^(jadianime)$/i
 handler.limit = true
 export default handler
 
-function ToAnime(efek, img) {
+async function processImageAndUpload(buffer) {
     try {
-        if (efek == "zahwazein") {
-            return "https://api.zahwazein.xyz/photoeditor/jadianime?url=" + img + "&apikey=zenzkey_1ec92f71d3bb"
-        } else if (efek == "caliph") {
-            return "https://api.caliph.biz.id/api/animeai?img=" + img + "&apikey=caliphkey"
-        } else if (efek == "xzn") {
-            return "https://xzn.wtf/api/toanime?url=" + img + "&apikey=wudysoft"
-        }
-    } catch (e) {
-        throw eror
-    }
-}
+        
+        const base64String = Buffer.from(buffer, 'binary').toString('base64');
 
-async function Crop(img, x, y, lebar, tinggi) {
-    let po = await Jimp.read(img);
-    let tong = await po.crop(Number(x), Number(y), Number(lebar), Number(tinggi)).getBufferAsync(Jimp.MIME_JPEG)
-    return tong
+        const apiResponse = await axios.post('https://www.drawever.com/api/photo-to-anime', {
+            data: `data:image/png;base64,${base64String}`,
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        return 'https://www.drawever.com' + apiResponse.data.urls[1] || 'https://www.drawever.com' + apiResponse.data.urls[0];
+    } catch (error) {
+        throw error;
+    }
 }

@@ -74,7 +74,8 @@ let handler = async (m, {
     })
     let tags
     let teks = `${args[0]}`.toLowerCase()
-    let arrayMenu = ["all", "absen", "admin", "advanced", "anonymous", "ai", "audio", "Baileys", "database", "downloader", "edukasi", "fun", "game", "genshin", "group", "host", "info", "internet", "jadian", "jadibot", "kerang", "main", "maker", "music", "nocategory", "nsfw", "nulis", "owner", "premium", "primbon", "quotes", "quran", "random", "rpg", "sticker", "tools", "vote", "xp", "store", "virus", "thnks"]
+    let pp = logo || fla + "menu " + teks
+    let arrayMenu = ["all", "absen", "admin", "advanced", "anonymous", "ai", "gpt", "audio", "Baileys", "database", "downloader", "edukasi", "fun", "game", "genshin", "group", "host", "info", "internet", "jadian", "jadibot", "kerang", "main", "maker", "music", "nocategory", "nsfw", "nulis", "owner", "premium", "primbon", "quotes", "quran", "random", "rpg", "sticker", "tools", "vote", "xp", "store", "virus", "thnks"]
     if (!arrayMenu.includes(teks)) teks = "404"
     if (teks == "all") tags = {
         "main": "Main",
@@ -85,6 +86,7 @@ let handler = async (m, {
         "edukasi": "Edukasi",
         "quran": "Al Quran",
         "ai": "AI",
+        "gpt": "GPT",
         "tools": "Tools",
         "kerang": "Kerang Ajaib",
         "primbon": "Primbon",
@@ -207,6 +209,9 @@ let handler = async (m, {
     }
     if (teks == "ai") tags = {
         "ai": "AI"
+    }
+    if (teks == "gpt") tags = {
+        "gpt": "GPT"
     }
     if (teks == "random") tags = {
         "random": "Random"
@@ -635,28 +640,20 @@ ${v.rowId}`.trim()
         
         // Biasa
         let caption = tek + "\n\n" + spas + "*[ C O M M A N D ]*\n" + sects
-        let pesan = {
-            text: wait,
-            mentions: conn.parseMention(caption),
-            contextInfo: {
-                forwardingScore: 256,
-                isForwarded: true
-            }
-        };
-
-        let {
-            key
-        } = await conn.sendMessage(m.chat, pesan, {
-            quoted: m
-        });
-        await new Promise(resolve => setTimeout(resolve, 2000));
         return await conn.sendMessage(m.chat, {
-            text: caption,
-            edit: key,
-            mentions: conn.parseMention(caption)
-        }, {
-            quoted: m
-        });
+        text: caption,
+        contextInfo: {
+            externalAdReply: {
+                title: wm,
+                mediaType: 1,
+                renderLargerThumbnail: true,
+                thumbnail: await conn.resize(pp, 300, 175),
+                sourceUrl: "",
+                mediaUrl: pp,
+            },
+            mentionedJid: [m.sender],
+        },
+    });
         }
 
         /* Info Total */
@@ -756,7 +753,7 @@ ${v.rowId}`.trim()
             readmore: readMore
         }
         text = text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, "g"), (_, name) => "" + replace[name])
-        const pp = await conn.profilePictureUrl(conn.user.jid).catch(_ => "./src/avatar_contact.png")
+        
 
         //------------------< MENU >----------------
         /*
@@ -812,28 +809,20 @@ ${v.rowId}`.trim()
         */
         // Biasa
         let caption = text.trim()
-        let pesan = {
-            text: wait,
-            mentions: conn.parseMention(caption),
-            contextInfo: {
-                forwardingScore: 256,
-                isForwarded: true
-            }
-        };
-
-        let {
-            key
-        } = await conn.sendMessage(m.chat, pesan, {
-            quoted: m
-        });
-        await new Promise(resolve => setTimeout(resolve, 2000));
         await conn.sendMessage(m.chat, {
-            text: caption,
-            edit: key,
-            mentions: conn.parseMention(caption)
-        }, {
-            quoted: m
-        });
+        text: caption,
+        contextInfo: {
+            externalAdReply: {
+                title: wm,
+                mediaType: 1,
+                renderLargerThumbnail: true,
+                thumbnail: await conn.resize(pp, 300, 175),
+                sourceUrl: "",
+                mediaUrl: pp,
+            },
+            mentionedJid: [m.sender],
+        },
+    });
         // Biasa
         
     } catch (e) {

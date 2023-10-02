@@ -96,6 +96,7 @@ let handler = async (m, {
         "edukasi": "Edukasi",
         "quran": "Al Quran",
         "ai": "AI",
+        "gpt": "GPT",
         "tools": "Tools",
         "kerang": "Kerang Ajaib",
         "primbon": "Primbon",
@@ -324,7 +325,7 @@ let handler = async (m, {
             readmore: readMore
         }
         text = text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, "g"), (_, name) => "" + replace[name])
-        const pp = await conn.profilePictureUrl(conn.user.jid).catch(_ => "./src/avatar_contact.png")
+        let pp = logo || fla + "menu " + teks
 
         //------------------< MENU >----------------
         /*
@@ -381,11 +382,20 @@ let handler = async (m, {
         */
         
         // Biasa
-        await conn.sendMessage(m.chat, { text: text.trim(), contextInfo: {
-      mentionedJid: [m.sender],
-                    forwardingScore: 256,
-                    isForwarded: true,
-    }}, { quoted: m })
+        await conn.sendMessage(m.chat, {
+        text: text.trim(),
+        contextInfo: {
+            externalAdReply: {
+                title: wm,
+                mediaType: 1,
+                renderLargerThumbnail: true,
+                thumbnail: await conn.resize(pp, 300, 175),
+                sourceUrl: "",
+                mediaUrl: pp,
+            },
+            mentionedJid: [m.sender],
+        },
+    });
         // Biasa
     } catch (e) {
         await conn.reply(m.chat, "Maaf, menu sedang error", m)

@@ -12,7 +12,7 @@ let handler = async (m, {
         lang = args[0] ? args[0] : "id", text = m.quoted.text
     } else throw `Ex: ${usedPrefix + command} id hello i am robot`
     try {
-            const prompt = encodeURIComponent(text);
+            const prompt = (text.trim());
         let res = await translate(prompt, {
             to: lang,
             autoCorrect: true

@@ -39,9 +39,7 @@ let handler = async (m, {
             prompt: encodeURIComponent(tema),
             upscale: true,
             imageUrl: link,
-        cnModel: out,
-        cnModule: "canny",
-        sampler: "DDIM",
+        model: out
         };
         const openAIResponse = await generateImage(generateImageParams);
 
