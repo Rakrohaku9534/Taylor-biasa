@@ -210,13 +210,13 @@ store.readFromFile(storeFile)
 const connectionOptions = {
     ...(!pairingCode && !useMobile && !useQr && {
         printQRInTerminal: false,
-        mobile: false
+        mobile: !useMobile
     }),
     ...(pairingCode && {
         printQRInTerminal: !pairingCode
     }),
     ...(useMobile && {
-        mobile: true
+        mobile: !useMobile
     }),
     ...(useQr && {
         printQRInTerminal: true
@@ -249,7 +249,7 @@ const connectionOptions = {
             stream: 'store'
         })),
     },
-    browser: Browsers.macOS('Desktop'),
+    browser: ['Chrome (Linux)', '', ''],
     version,
     getMessage: async (key) => {
         let jid = jidNormalizedUser(key.remoteJid)
