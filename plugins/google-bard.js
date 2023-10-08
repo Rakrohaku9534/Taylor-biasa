@@ -17,7 +17,12 @@ let handler = async (m, {
         let res = await GoogleBard(text)
         await m.reply(res.join(''));
     } catch (e) {
+            try {
+        let res = await GoogleBardApi(text)
+        await m.reply(res);
+    } catch (e) {
             await m.reply(eror);
+            }
             }
 }
 handler.help = ["bard"]
@@ -50,4 +55,19 @@ async function GoogleBard(query) {
   const answer = JSON.parse(JSON.parse((await response.text()).split("\n").reduce((a, b) => (a.length > b.length ? a : b), ""))[0][2])[4][0][1];
 
   return answer;
+};
+
+async function GoogleBardApi(query) {
+  const headers = {
+    "Host": "api.azz.biz.id",
+    "X-Same-Domain": "1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    "Origin": "https://api.azz.biz.id",
+    "Referer": "https://api.azz.biz.id"
+  };
+
+  const bardRes = await fetch(`https://api.azz.biz.id/api/bard?q=${query}&key=global`, { method: 'get', headers });
+  const bardText = await bardRes.json();
+  return bardText.respon;
 };

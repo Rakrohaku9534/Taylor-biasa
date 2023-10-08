@@ -1,3 +1,4 @@
+import { shappymod } from '../lib/scrape.js'
 import cheerio from 'cheerio';
 import fetch from 'node-fetch';
 
@@ -23,14 +24,14 @@ let handler = async (m, {
             if (!inputs) return m.reply("Input query link\nExample: .happymod search|vpn")
             await m.reply(wait)
             try {
-                let res = await searchHappymod(inputs)
-                let teks = res.map((item, index) => {
+                let res = await shappymod(inputs)
+                let teks = res.data.map((item, index) => {
                     return `🔍 *[ RESULT ${index + 1} ]*
 
-📢 *title:* ${item.title}
-🌐 *url:* ${item.link}
-🖼️ *image:* ${item.image}
-🔖 *star:* ${item.star}
+📢 *Judul:* ${item.judul}
+🌐 *Link:* ${item.link}
+🖼️ *Thumb:* ${item.thumb}
+🔖 *Rating:* ${item.rating}
 `
 
                 }).filter(v => v).join("\n\n________________________\n\n")
@@ -68,27 +69,6 @@ handler.command = /^(happymod)$/i
 export default handler
 
 /* New Line */
-async function searchHappymod(q) {
-  const response = await fetch(`https://example.com/search?q=${q}`);
-  const body = await response.text();
-
-  const $ = cheerio.load(body);
-  const sections = [];
-
-  $('.container-row.clearfix.container-wrap .container-left section.section-page-white').each((index, element) => {
-    const title = $('h3.pdt-app-h3 a', element).text().trim();
-    const link = 'https://example.com' + $('h3.pdt-app-h3 a', element).attr('href');
-    const image = $('img.lazy', element).attr('data-original');
-    const star = $('.a-search-num', element).text().trim();
-
-    if (title && link && image && star) {
-      sections.push({ title, link, image, star });
-    }
-  });
-
-  return sections;
-}
-
 async function mirrorHappymod(url) {
   try {
     const response = await fetch(url + (url.endsWith('download.html') ? '' : 'download.html'));
