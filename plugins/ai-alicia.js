@@ -1,34 +1,31 @@
 import fetch from 'node-fetch';
 
-const getaliciaResponse = async (q, u) => {
+export async function before(m) {
+  const { alicia } = global.db.data.chats[m.chat] || {};
+  if (m.isBaileys || !alicia || !m.text) return false;
+
+  const text = m.text.replace(/[^\x00-\x7F]/g, '').trim();
+  if (!text) return false;
+
+  const url = `https://api.azz.biz.id/api/alicia?q=${encodeURIComponent(text)}&user=${m.name}&key=global`;
+
   try {
-    const response = await fetch(`https://api.azz.biz.id/api/alicia?q=${q}&user=${u}&key=global`);
-    const data = await response.json();
-    return data.respon;
-  } catch (error) {
-    console.error(error);
-    return null;
+    const api = await fetch(url);
+    const res = await api.json();
+
+    if (res.respon) {
+      await this.reply(m.chat, `*alicia says:*\n${res.respon || ''}`, m);
+
+      if (text.trim().toUpperCase() === 'ALICIA STOP') {
+        alicia = false;
+        await this.reply(m.chat, `*alicia stop success*`, m);
+      }
+      return true;
+    }
+  } catch {
+    // Handle errors here
   }
-};
 
-const handler = async (m, { text }) => {
-  if (!text) throw 'Contoh: .alicia Pesan yang ingin Anda sampaikan kepada asisten AI';
-
-  m.reply(wait);
-  
-  try {
-    
-    const response = await getaliciaResponse(text, m.name);
-
-    m.reply(response);
-  } catch (error) {
-    console.error('Error:', error);
-    m.reply(eror);
-  }
-};
-
-handler.help = ['alicia'];
-handler.tags = ['ai'];
-handler.command = /^(alicia)$/i;
-
-export default handler;
+  await this.reply(m.chat, `*alicia error*`, m);
+  return true;
+}
