@@ -9,12 +9,7 @@ let handler = async (m, {
     usedPrefix,
     command
 }) => {
-await conn.sendMessage(m.chat, {
-    react: {
-        text: "⏳",
-        key: m.key,
-    }
-});
+await conn.sendReact(m.chat, "⏳", m.key)
     var soun = ["aku-ngakak",
         "anjay",
         "ara-ara2",
@@ -104,12 +99,7 @@ await conn.sendMessage(m.chat, {
         await conn.reply(m.chat, cap, m, adReply);
         await conn.sendPresenceUpdate('recording', m.chat);
         await conn.sendFile(m.chat, vn, '', null, m, true, { ptt: true });
-        await conn.sendMessage(m.chat, {
-    react: {
-        text: "✅",
-        key: m.key,
-    }
-});
+        await conn.sendReact(m.chat, "✅", m.key)
     
 }
 handler.help = ["menu", "help", "?"]

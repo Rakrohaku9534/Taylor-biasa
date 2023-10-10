@@ -66,12 +66,9 @@ let handler = async (m, {
     __dirname,
     args
 }) => {
-    await conn.sendMessage(m.chat, {
-        react: {
-            text: "⏳",
-            key: m.key,
-        }
-    })
+   
+    await conn.sendReact(m.chat, "⏳", m.key)
+    
     let spas = "                "
     let spas2 = "         "
     let mojis = "╰╴"
@@ -354,7 +351,8 @@ let handler = async (m, {
 
         // Sound
         var vn = "https://raw.githubusercontent.com/AyGemuy/HAORI-API/main/audio/bot.mp3"
-        conn.sendMessage(m.chat, { audio: { url: vn }, seconds: fsizedoc, ptt: true, mimetype: "audio/mpeg", fileName: "vn.mp3", waveform: [100,0,100,0,100,0,100] }, { quoted: m })
+        await conn.sendMessage(m.chat, { audio: { url: vn }, seconds: fsizedoc, ptt: true, mimetype: "audio/mpeg", fileName: "vn.mp3", waveform: [100,0,100,0,100,0,100] }, { quoted: m })
+        await conn.sendReact(m.chat, "✅", m.key)
     } catch (e) {
         conn.reply(m.chat, "Maaf, menu sedang error", m)
         throw e

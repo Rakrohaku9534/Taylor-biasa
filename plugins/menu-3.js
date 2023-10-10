@@ -66,12 +66,7 @@ let handler = async (m, {
     __dirname,
     args
 }) => {
-    await conn.sendMessage(m.chat, {
-        react: {
-            text: "⏳",
-            key: m.key,
-        }
-    })
+await conn.sendReact(m.chat, "⏳", m.key)
     let tags
     let teks = `${args[0]}`.toLowerCase()
     let pp = logo || fla + "menu " + teks
@@ -823,6 +818,7 @@ ${v.rowId}`.trim()
             mentionedJid: [m.sender],
         },
     });
+    await conn.sendReact(m.chat, "✅", m.key)
         // Biasa
         
     } catch (e) {

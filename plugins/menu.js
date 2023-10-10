@@ -66,12 +66,7 @@ let handler = async (m, {
     __dirname,
     args
 }) => {
-    await conn.sendMessage(m.chat, {
-        react: {
-            text: "⏳",
-            key: m.key,
-        }
-    })
+    await conn.sendReact(m.chat, "⏳", m.key)
     let spas = "                "
     let spas2 = "         "
     let mojis = "╰╴"
@@ -396,6 +391,7 @@ let handler = async (m, {
             mentionedJid: [m.sender],
         },
     });
+    await conn.sendReact(m.chat, "✅", m.key)
         // Biasa
     } catch (e) {
         await conn.reply(m.chat, "Maaf, menu sedang error", m)
