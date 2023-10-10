@@ -649,6 +649,7 @@ ${v.rowId}`.trim()
             mentionedJid: [m.sender],
         },
     });
+    await conn.sendReact(m.chat, "✅", m.key)
         }
 
         /* Info Total */

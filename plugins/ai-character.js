@@ -1,8 +1,9 @@
 import fetch from 'node-fetch';
 
 export async function before(m) {
-  const { characterai } = global.db.data.chats[m.chat] || {};
-  if (m.isBaileys || !characterai || !m.text) return false;
+  this.characterai = this.characterai || {};
+
+  if (m.isBaileys || !global.db.data.chats[m.chat].characterai || !m.text) return false;
 
   const text = m.text.replace(/[^\x00-\x7F]/g, '').trim();
   if (!text) return false;
@@ -17,41 +18,37 @@ export async function before(m) {
 
   const words = text.split(' ');
 
-  if (words.length === 3 && words[0].toLowerCase() === 'character' && !isNaN(words[2])) {
+  if (words.length === 3 && words[0].toLowerCase() === 'characterai' && !isNaN(words[2])) {
     const characterNumber = parseInt(words[2]) - 1;
     if (characterNumber >= 0 && characterNumber < characterNames.length) {
-      characterai.name = characterNames[characterNumber];
+      this.characterai.name = characterNames[characterNumber];
+      await this.reply(m.chat, `*Nama karakter diubah menjadi: ${this.characterai.name}*`, m);
     } else {
       await this.reply(m.chat, `*Nomor karakter tidak valid*`, m);
       await this.reply(m.chat, `*List nama karakter:*\n${characterNames.join(', ')}`, m);
       return true;
     }
-  } else {
-    await this.reply(m.chat, `*Format input tidak benar. Gunakan format: "character set nomor"*`, m);
-    await this.reply(m.chat, `*List nama karakter:*\n${characterNames.join(', ')}`, m);
+  } else if (text.trim().toLowerCase() === 'characterai stop') {
+    this.characterai.name = ''; // Set character name to empty string to stop
+    await this.reply(m.chat, `*Characterai telah dihentikan*`, m);
     return true;
   }
 
-  const name = characterai.name;
-  const url = `https://api.yanzbotz.my.id/api/ai/characterai?text=${encodeURIComponent(text)}&name=${name}`;
-
-  try {
-    const api = await fetch(url);
-    const res = await api.json();
-
-    if (res.result) {
-      await this.reply(m.chat, `*${name} says:*\n${res.result || ''}`, m);
-
-      if (text.trim().toUpperCase() === 'characterai stop') {
-        characterai = false;
-        await this.reply(m.chat, `*${name} stop success*`, m);
+  // Memeriksa apakah karakter telah diatur sebelum memanggil API
+  if (this.characterai.name) {
+    const name = this.characterai.name;
+    const url = `https://api.yanzbotz.my.id/api/ai/characterai?text=${encodeURIComponent(text)}&name=${encodeURIComponent(name)}`;
+    try {
+      const api = await fetch(url);
+      const res = await api.json();
+  
+      if (res.result) {
+        await this.reply(m.chat, `*${name}:*\n${res.result || ''}`, m);
       }
-      return true;
+    } catch {
+      // Handle errors here
     }
-  } catch {
-    // Handle errors here
   }
 
-  await this.reply(m.chat, `*characterai error*`, m);
   return true;
 }
