@@ -45,6 +45,7 @@
         "@adiwajshing/keyed-db": "^0.2.4",
         "@bochilteam/scraper": "*",
         "@prevter/tiktok-scraper": "*",
+        "@ruhend/scraper": "*",
         "@vitalets/google-translate-api": "*",
         "@xct007/frieren-scraper": "*",
         "@xct007/tiktok-scraper": "*",
