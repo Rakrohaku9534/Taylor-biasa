@@ -15,14 +15,14 @@ let handler = async (m, {
     let media = await q.download()
     let isTele = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime)
     let link = await (isTele ? uploadImage : uploadFile)(media)
-    if (!text) throw 'Input parameter required'
+    if (!text) throw 'Input parameter required\n\n*Detail:* https://images.weserv.nl/docs/'
     try {
         const input = text;
         const result = input.replace(/ /g, '&').replace(/(\w+)=(\w+)/g, '$1=$2');
         const wsrv = "https://wsrv.nl/?url=" + link + "&" + result;
         await conn.sendFile(m.chat, wsrv, 'wsrv.jpg', 'Sudah Jadi', m);
     } catch (e) {
-        await m.reply('Error occurred');
+        await m.reply(eror + '\n\n*Detail:* https://images.weserv.nl/docs/');
     }
 }
 handler.help = ['towsrv'].map(v => v + ' (Balas foto)')
